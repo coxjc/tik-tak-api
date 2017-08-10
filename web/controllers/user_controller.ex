@@ -2,21 +2,26 @@ defmodule Api.UserController do
   use Api.Web, :controller
 
   alias Api.User
+  alias Api.Phone
 
-  def index(conn, _params) do
-    user = Repo.all(User)
-    render(conn, "index.json", user: user)
-  end
-
-  def create(conn, %{"user" => user_params}) do
-    changeset = User.changeset(%User{}, user_params)
-
-    case Repo.insert(changeset) do
-      {:ok, user} ->
-        conn
-        |> put_status(:created)
-        |> put_resp_header("location", user_path(conn, :show, user))
-        |> render("show.json", user: user)
+  def create(conn, %{"number" => phone_number, "lat" => lat, "lng" => lng}) do
+    #    changeset = User.changeset(%User{}, user_params)
+    phone_changeset = Phone.register_changeset(%Phone{}, %{number: phone_number})
+    case Repo.insert(phone_changeset) do
+      {:ok, phone} ->
+        user_changeset = User.register_changeset(%User{}, %{phone: phone, lat: lat, lng: lng})
+        case Repo.insert(user_changeset) do
+          {:ok, user} ->
+            conn
+            |> put_status(:created)
+            |> put_resp_header("location", user_path(conn, :show, user))
+            |> render("user.json", %{user: user, phone: phone})
+          {:error, changeset} ->
+            Repo.delete!(phone)
+            conn
+            |> put_status(:unprocessable_entity)
+            |> render(Api.ChangesetView, "error.json", changeset: changeset)
+        end
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
