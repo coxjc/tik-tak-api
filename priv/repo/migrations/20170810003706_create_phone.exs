@@ -1,0 +1,15 @@
+defmodule Api.Repo.Migrations.CreatePhone do
+  use Ecto.Migration
+
+  def change do
+    create table(:phone) do
+      add :number, :string
+      add :code, :string
+      add :code_sent, :datetime
+      add :verified, :boolean, default: false, null: false
+
+      timestamps()
+    end
+
+  end
+end
