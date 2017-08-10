@@ -8,7 +8,8 @@ defmodule Api.User do
     field :suspended, :boolean, default: false
     field :suspended_until, Ecto.DateTime
     field :expelled, :boolean, default: false
-    belongs_to :phone, Api.Phone
+    has_one :phone, Api.Phone
+    has_many :auth_tokens, Api.AuthToken
 
     timestamps()
   end

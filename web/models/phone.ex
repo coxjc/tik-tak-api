@@ -6,6 +6,7 @@ defmodule Api.Phone do
     field :code, :string
     field :code_sent, Ecto.DateTime
     field :verified, :boolean, default: false
+    belongs_to :user, Api.User
 
     timestamps()
   end
