@@ -3,6 +3,7 @@ defmodule Api.UserController do
 
   alias Api.User
   alias Api.Phone
+  alias Api.Twilio
 
   def create(conn, %{"number" => phone_number, "lat" => lat, "lng" => lng}) do
     #    changeset = User.changeset(%User{}, user_params)
@@ -12,6 +13,7 @@ defmodule Api.UserController do
         user_changeset = User.register_changeset(%User{}, %{phone: phone, lat: lat, lng: lng})
         case Repo.insert(user_changeset) do
           {:ok, user} ->
+            Task.async(Twilio, :send_verification_sms, [%{number: phone.number, verification_code: phone.code}])
             conn
             |> put_status(:created)
             |> put_resp_header("location", user_path(conn, :show, user))

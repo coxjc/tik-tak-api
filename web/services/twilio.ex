@@ -1,4 +1,4 @@
-defmodule ApiServer.Messenger do
+defmodule Api.Twilio do
   import Twilex
   alias Twilex.Messenger
 

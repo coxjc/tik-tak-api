@@ -19,24 +19,50 @@ defmodule Api.Phone do
     struct
     |> cast(params, [:number])
     |> validate_required([:number])
-    |> format_number
+    |> put_format_number
+    |> put_code
   end
 
-  defp format_number(changeset) do
-    case Regex.match?(@phone_regex, changeset.changes.number) do
+
+  defp put_format_number(changeset) do
+    case format_number(changeset.changes.number) do
+      nil -> 
+        changeset 
+        |> add_error(:number, "Invalid format")
+      number ->
+        changeset 
+        |> put_change(:number, number)
+    end
+  end
+
+  def format_number(param) do
+    case Regex.match?(@phone_regex, param) do
       true ->
         # parse the phone number into specific format
-        number = Regex.replace(@phone_regex, changeset.changes.number, "\\1-\\2-\\3-\\4") 
+        number = Regex.replace(@phone_regex, param, "\\1-\\2-\\3-\\4") 
         # if the phone number did not include a country code, add USA 1 to beginning 
         if String.slice(number, 0..0) == "-" do
           number = String.replace_leading(number, "-", "1-")
         end
-        changeset 
-        |> put_change(:number, number)
+        number 
       false ->
-        changeset 
-        |> add_error(:number, "Invalid format")
+        nil
     end
+  end
+
+  # changeset used to verify someone's number 
+  def verify_changeset(struct, params \\ %{}) do
+    struct
+    |> cast(params, [], [])
+    |> put_change(:verified, true)
+  end
+
+  # random code generator for sms
+  # puts code in changeset 
+  defp put_code(struct, params \\ %{}) do
+    struct 
+    |> cast(params, [], [])
+    |> put_change(:code, Integer.to_string(Enum.random(1000000..9999999)))
   end
 
 end

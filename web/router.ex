@@ -7,6 +7,7 @@ defmodule Api.Router do
 
   scope "/api", Api do
     pipe_through :api
+    post "/phones/verify", PhoneController, :verify
     resources "/users", UserController
     resources "/phones", PhoneController
     resources "/posts", PostController
