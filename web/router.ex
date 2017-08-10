@@ -7,5 +7,9 @@ defmodule Api.Router do
 
   scope "/api", Api do
     pipe_through :api
+    resources "/users", UserController
+    resources "/phones", PhoneController
+    resources "/posts", PostController
+    resources "/auth_tokens", AuthTokenController
   end
 end
