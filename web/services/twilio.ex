@@ -12,4 +12,19 @@ defmodule Api.Twilio do
     end
   end
 
+  def phone_number_is_mobile?(%{number: number}) do
+    resp = HTTPoison.get!("https://#{Application.get_env(:twilex, :sid)}:#{Application.get_env(:twilex, :token)}@lookups.twilio.com/v1/PhoneNumbers/#{number}?CountryCode=US&Type=carrier", [], [])
+    case resp do
+      %HTTPoison.Response{status_code: 200, body: body} ->
+        case Poison.Parser.parse!(body) do
+          %{"carrier" => %{"type" => "mobile"}} -> 
+            true
+          _ -> 
+            false
+        end
+      _ ->
+        false
+    end
+  end
+
 end
