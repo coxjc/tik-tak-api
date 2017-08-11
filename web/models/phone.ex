@@ -24,6 +24,13 @@ defmodule Api.Phone do
     |> put_code
   end
 
+  def use_code_changeset(struct, params \\ %{})  do
+    struct
+    |> cast(params, [])
+    |> put_change(:verified, true) 
+    |> put_change(:code, nil) 
+    |> put_change(:code_sent, nil) 
+  end
 
   defp put_format_number(changeset) do
     case format_number(changeset.changes.number) do

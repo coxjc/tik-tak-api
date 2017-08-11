@@ -3,6 +3,7 @@ defmodule Api.UserController do
 
   alias Api.User
   alias Api.Phone
+  alias Api.AuthToken
   alias Api.Twilio
 
   def create(conn, %{"number" => phone_number, "lat" => lat, "lng" => lng}) do
@@ -33,25 +34,6 @@ defmodule Api.UserController do
           |> put_status(:unprocessable_entity)
           |> render(Api.ChangesetView, "error.json", changeset: changeset)
       end
-    end
-  end
-
-  def show(conn, %{"id" => id}) do
-    user = Repo.get!(User, id)
-    render(conn, "show.json", user: user)
-  end
-
-  def update(conn, %{"id" => id, "user" => user_params}) do
-    user = Repo.get!(User, id)
-    changeset = User.changeset(user, user_params)
-
-    case Repo.update(changeset) do
-      {:ok, user} ->
-        render(conn, "show.json", user: user)
-      {:error, changeset} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> render(Api.ChangesetView, "error.json", changeset: changeset)
     end
   end
 

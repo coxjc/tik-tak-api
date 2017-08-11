@@ -19,7 +19,7 @@ defmodule Api.Mixfile do
   def application do
     [mod: {Api, []},
      applications: [:phoenix, :phoenix_pubsub, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :mariaex, :twilex]]
+                    :phoenix_ecto, :mariaex, :twilex, :uuid]]
   end
 
   # Specifies which paths to compile per environment.
@@ -36,6 +36,7 @@ defmodule Api.Mixfile do
      {:mariaex, ">= 0.0.0"},
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
+     {:uuid, "~> 1.1"},
      {:twilex, ">= 0.0.0", override: true}]
   end
 
