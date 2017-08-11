@@ -11,5 +11,7 @@ defmodule Api.Repo.Migrations.CreatePhone do
       timestamps()
     end
 
+    create unique_index(:phone, [:number])
+
   end
 end

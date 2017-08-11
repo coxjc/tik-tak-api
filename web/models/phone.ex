@@ -20,6 +20,7 @@ defmodule Api.Phone do
     |> cast(params, [:number])
     |> validate_required([:number])
     |> put_format_number
+    |> unique_constraint(:number)
     |> put_code
   end
 
