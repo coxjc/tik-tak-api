@@ -12,6 +12,8 @@ defmodule Api.PhoneController do
       |> put_status(:unprocessable_entity)
       |> json(%{error: "Invalid credentials"})
     else
+      # TODO simplify this shit.. there is way too much going on here
+      # i promise im not an idiot 
       if not phone.verified do
         changeset = Phone.verify_changeset(phone)
         Repo.update!(changeset)

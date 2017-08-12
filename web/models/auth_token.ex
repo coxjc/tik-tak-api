@@ -43,7 +43,8 @@ defmodule Api.AuthToken do
   end
 
   defp generate_uuid() do
-    UUID.uuid1()
+    # TODO probs not a good way to do this
+    UUID.uuid1() <> UUID.uuid1 <> UUID.uuid1
   end
 
 end

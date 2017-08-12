@@ -14,8 +14,7 @@ defmodule Api.VoteController do
         |> put_status(:unprocessable_entity)
         |> json(%{error: "Post unavailable"}) 
       post ->
-        cur_vote = from(v in Vote, where: v.user_id == ^(user.id) and v.post_id == ^post_id) |> Repo.one
-        case cur_vote do
+        case (from(v in Vote, where: v.user_id == ^(user.id) and v.post_id == ^post_id) |> Repo.one) do
           nil -> 
             changeset = Vote.changeset(%Vote{}, %{user: user, post: post, score: score})
             case Repo.insert(changeset) do
@@ -28,7 +27,7 @@ defmodule Api.VoteController do
                 |> put_status(:unprocessable_entity)
                 |> render(Api.ChangesetView, "error.json", changeset: changeset)
             end
-          _ ->
+          cur_vote ->
             new_vote = Vote.update_changeset(cur_vote, %{score: score})
             case Repo.update(new_vote) do
               {:ok, vote} ->
