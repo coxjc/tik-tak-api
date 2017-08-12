@@ -2,8 +2,8 @@ defmodule Api.User do
   use Api.Web, :model
 
   schema "user" do
-    field :lat, :string
-    field :lng, :string
+    field :lat, :float
+    field :lng, :float
     field :suspended, :boolean, default: false
     field :suspended_until, Ecto.DateTime, default: nil
     field :expelled, :boolean, default: false

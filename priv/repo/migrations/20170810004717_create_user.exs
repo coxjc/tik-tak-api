@@ -3,8 +3,8 @@ defmodule Api.Repo.Migrations.CreateUser do
 
   def change do
     create table(:user) do
-      add :lat, :string
-      add :lng, :string
+      add :lat, :float
+      add :lng, :float
       add :suspended, :boolean, default: false, null: false
       add :suspended_until, :datetime
       add :expelled, :boolean, default: false, null: false
