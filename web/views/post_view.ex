@@ -12,8 +12,7 @@ defmodule Api.PostView do
   def render("post.json", %{post: post}) do
     %{id: post.id,
       content: post.content,
-      upvotes: post.upvotes,
-      downvotes: post.downvotes
+      score: post.score
     }
   end
 end

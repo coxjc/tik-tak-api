@@ -3,8 +3,7 @@ defmodule Api.Post do
 
   schema "post" do
     field :content, :string
-    field :upvotes, :integer, default: 0
-    field :downvotes, :integer, default: 0 
+    field :score, :integer, virtual: true
     field :lat, :float
     field :lng, :float
     field :visible, :boolean, default: true
