@@ -21,26 +21,24 @@ defmodule Api.Vote do
     |> validate_required([:score])
   end
 
-  def update_changeset(struct, params \\ %{}) do
+  def update_changeset(struct, params = %{score: score}) do
     struct
-    |> cast(params, [])
-    |> put_change(:score, params.score)
+    |> cast(params, [:score])
+    |> put_change(:score, score)
     |> validate_vote_range
   end
 
-  defp validate_vote_range(changeset) do
-    case changeset.changes do
-      %{score: score} ->
-        IO.inspect changeset
-        if score == -1 || score == 0 || score == 1 do
-          changeset
-        else 
-          IO.inspect changeset
-          changeset |> add_error(:score, "Invalid score")
-        end
-      _ ->
+  defp validate_vote_range(changeset = %Ecto.Changeset{changes: %{score: score}}) do
+    case score in [-1, 0, 1] do 
+      true ->
         changeset
+      false ->
+        changeset |> add_error(:score, "Invalid score")
     end
+  end
+
+  defp validate_vote_range(changeset = %Ecto.Changeset{changes: %{}}) do
+    changeset
   end
 
 end
