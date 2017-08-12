@@ -10,6 +10,7 @@ defmodule Api.Post do
     field :visible, :boolean, default: true
 
     belongs_to :user, Api.User
+    has_many :votes, Api.Vote
 
     timestamps()
   end

@@ -10,6 +10,7 @@ defmodule Api.User do
     belongs_to :phone, Api.Phone
     has_one :auth_tokens, Api.AuthToken
     has_many :posts, Api.Post
+    has_many :votes, Api.Vote
 
     timestamps()
   end

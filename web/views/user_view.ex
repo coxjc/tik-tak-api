@@ -10,10 +10,7 @@ defmodule Api.UserView do
   end
 
   def render("user.json", %{user: user, phone: phone}) do
-    %{
-      render("user.json", %{user: user}),
-      render(Api.Phone, "phone.json", %{phone: phone})
-    }
+      render("user.json", %{user: user})
   end
 
   def render("user.json", %{user: user}) do

@@ -8,9 +8,9 @@ defmodule Api.PostController do
     render(conn, "index.json", post: post)
   end
 
-  def create(conn, %{"content" => content}) do
+  def create(conn, %{"content" => content, "lat" => lat, "lng" => lng}) do
     user = conn.assigns.user
-    changeset = Post.create_changeset(%Post{}, %{user: user, content: content})
+    changeset = Post.create_changeset(%Post{}, %{user: user, content: content, lat: lat, lng: lng})
 
     case Repo.insert(changeset) do
       {:ok, post} ->
