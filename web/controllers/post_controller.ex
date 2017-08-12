@@ -2,10 +2,11 @@ defmodule Api.PostController do
   use Api.Web, :controller
 
   alias Api.Post
+  alias Api.Vote
+
 
   def index(conn, _params) do
-    post = Repo.all(Post)
-    render(conn, "index.json", post: post)
+    render(conn, "index.json", post: Enum.map(Repo.all(Post), (fn(x) -> Map.put(x, :score, sum_score x) end)))
   end
 
   def create(conn, %{"content" => content, "lat" => lat, "lng" => lng}) do
@@ -26,6 +27,7 @@ defmodule Api.PostController do
 
   def show(conn, %{"id" => id}) do
     post = Repo.get!(Post, id)
+    post = Map.put(post, :score, sum_score(post)) 
     render(conn, "show.json", post: post)
   end
 
@@ -52,4 +54,9 @@ defmodule Api.PostController do
 
     send_resp(conn, :no_content, "")
   end
+
+  defp sum_score(post) do
+    from(v in Vote, where: v.post_id == ^(post.id)) |> Repo.all |> Enum.map(fn(x) -> x.score end) |> Enum.sum
+  end
+
 end
