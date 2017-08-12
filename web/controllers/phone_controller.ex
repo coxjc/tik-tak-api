@@ -18,6 +18,7 @@ defmodule Api.PhoneController do
       end
       auth_token_changeset = AuthToken.login_changeset(%AuthToken{}, %{user: phone.user})
       phone_changeset = Phone.use_code_changeset(phone)
+      Repo.preload(phone.user, :auth_tokens).auth_tokens |> AuthToken.logout_changeset |> Repo.update! 
       token = Repo.insert!(auth_token_changeset)
       phone = Repo.update!(phone_changeset)
       conn |> put_status(:created) |> render(AuthTokenView, "auth_token.json", %{auth_token: token})
