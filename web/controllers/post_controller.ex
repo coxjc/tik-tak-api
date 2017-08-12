@@ -9,13 +9,12 @@ defmodule Api.PostController do
   end
 
   def create(conn, %{"post" => post_params}) do
-    changeset = Post.changeset(%Post{}, post_params)
+    changeset = Post.create_changeset(%Post{}, post_params)
 
     case Repo.insert(changeset) do
       {:ok, post} ->
         conn
         |> put_status(:created)
-        |> put_resp_header("location", post_path(conn, :show, post))
         |> render("show.json", post: post)
       {:error, changeset} ->
         conn

@@ -9,6 +9,7 @@ defmodule Api.User do
     field :expelled, :boolean, default: false
     belongs_to :phone, Api.Phone
     has_one :auth_tokens, Api.AuthToken
+    has_many :posts, Api.Post
 
     timestamps()
   end
