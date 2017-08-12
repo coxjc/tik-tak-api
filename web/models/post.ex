@@ -18,7 +18,7 @@ defmodule Api.Post do
   def create_changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:content])
-    |> validate_required([:content, :user])
+    |> validate_required([:content])
     |> put_assoc(:user, params.user)
     |> validate_length(:content, min: 1, max: 140)
   end

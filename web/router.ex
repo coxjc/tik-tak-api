@@ -11,12 +11,13 @@ defmodule Api.Router do
     post "/phones/verify", PhoneController, :verify
     resources "/users", UserController
     resources "/phones", PhoneController
+    resources "/posts", PostController, except: [:create]
     resources "/auth_tokens", AuthTokenController
   end
 
   scope "/api/managed", Api do
     pipe_through [:api, :authenticate_auth_token]
-    resources "/posts", PostController
+    resources "/posts", PostController, only: [:create]
   end
 
 end
