@@ -6,14 +6,13 @@ defmodule Api.PhoneView do
   end
 
   def render("show.json", %{phone: phone}) do
-    %{data: render_one(phone, Api.PhoneView, "phone.json")}
+    %{phone: render_one(phone, Api.PhoneView, "phone.json")}
   end
 
   def render("phone.json", %{phone: phone}) do
-    %{id: phone.id,
+    %{
       number: phone.number,
-      code: phone.code,
-      code_sent: phone.code_sent,
-      verified: phone.verified}
+      verified: phone.verified
+    }
   end
 end

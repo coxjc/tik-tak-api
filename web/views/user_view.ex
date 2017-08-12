@@ -11,21 +11,14 @@ defmodule Api.UserView do
 
   def render("user.json", %{user: user, phone: phone}) do
     %{
-      user: %{
-            lat: user.lat,
-            lng: user.lng,
-            suspended: user.suspended,
-            suspended_until: user.suspended_until,
-            expelled: user.expelled
-          },
-      phone: %{
-        number: phone.number
-      }
+      render("user.json", %{user: user}),
+      render(Api.Phone, "phone.json", %{phone: phone})
     }
   end
 
   def render("user.json", %{user: user}) do
-    %{user: %{
+    %{
+      user: %{
         lat: user.lat,
         lng: user.lng,
         suspended: user.suspended,
