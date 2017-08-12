@@ -23,7 +23,7 @@ defmodule Api.AuthTokenPlug do
     end
     conn 
     |> assign(:auth_token, auth_token)
-    |> assign( :user, user)
+    |> assign(:user, user)
   end
 
   def authenticate_auth_token(conn, _opts) do

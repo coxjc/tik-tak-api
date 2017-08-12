@@ -36,6 +36,7 @@ defmodule Api.Web do
 
       import Api.Router.Helpers
       import Api.Gettext
+      import Api.AuthTokenPlug, only: [authenticate_auth_token: 2]
     end
   end
 
@@ -55,6 +56,7 @@ defmodule Api.Web do
   def router do
     quote do
       use Phoenix.Router
+      import Api.AuthTokenPlug, only: [authenticate_auth_token: 2]
     end
   end
 

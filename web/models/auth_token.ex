@@ -26,6 +26,17 @@ defmodule Api.AuthToken do
     |> add_token
   end
 
+  def logout_changeset(struct, params \\ %{}) do
+    struct
+    |> cast(params, [])
+    |> put_change(:valid, false)
+  end
+
+  # returns true if the token is within lifespan and hasn't been logged out
+  def valid?(auth_token_record) do
+    auth_token_record != nil && auth_token_record.valid 
+  end
+
   defp add_token(changeset) do
     changeset
     |> Ecto.Changeset.put_change(:token, generate_uuid())

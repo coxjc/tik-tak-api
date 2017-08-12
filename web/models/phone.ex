@@ -24,6 +24,12 @@ defmodule Api.Phone do
     |> put_code
   end
 
+  def login_changeset(struct, params \\ %{}) do
+    struct
+    |> cast(params, [])
+    |> put_code
+  end 
+
   def use_code_changeset(struct, params \\ %{})  do
     struct
     |> cast(params, [])

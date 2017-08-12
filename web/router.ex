@@ -3,6 +3,7 @@ defmodule Api.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug Api.AuthTokenPlug, repo: Api.Repo
   end
 
   scope "/api", Api do
@@ -10,7 +11,12 @@ defmodule Api.Router do
     post "/phones/verify", PhoneController, :verify
     resources "/users", UserController
     resources "/phones", PhoneController
-    resources "/posts", PostController
     resources "/auth_tokens", AuthTokenController
   end
+
+  scope "/api/managed", Api do
+    pipe_through [:api, :authenticate_auth_token]
+    resources "/posts", PostController
+  end
+
 end
