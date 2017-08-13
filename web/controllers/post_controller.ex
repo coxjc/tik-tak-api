@@ -5,8 +5,10 @@ defmodule Api.PostController do
   alias Api.Vote
 
 
-  def index(conn, _params) do
-    render(conn, "index.json", post: Enum.map(Repo.all(Post), (fn(x) -> Map.put(x, :score, sum_score x) end)))
+  def index(conn, %{"lat" => lat, "lng" => lng, "range" => radius, "max" => max}) do
+    # TODO there is too much going on here. having to query from posts twice. works for now so fuck it
+    posts = Enum.map(post_ids_by_distance(lat, lng, radius, max), fn([head|tail]) -> head end) |> posts_from_id
+    render(conn, "index.json", post: Enum.map(posts, (fn(x) -> Map.put(x, :score, sum_score x) end)))
   end
 
   def create(conn, %{"content" => content, "lat" => lat, "lng" => lng}) do
@@ -55,8 +57,21 @@ defmodule Api.PostController do
     send_resp(conn, :no_content, "")
   end
 
+  defp posts_from_id(ids) do
+    from(p in Post, where: p.id in ^ids) |> Repo.all
+  end
+
   defp sum_score(post) do
     from(v in Vote, where: v.post_id == ^(post.id)) |> Repo.all |> Enum.map(fn(x) -> x.score end) |> Enum.sum
+  end
+
+  defp post_ids_by_distance(lat, lng, distance, max) do
+    case Ecto.Adapters.SQL.query(Repo, "SELECT id, ( 3959 * acos ( cos ( radians(?) ) * cos( radians( lat ) ) * cos( radians( lng ) - radians(?) ) + sin ( radians(?) ) * sin( radians( lat ) ) ) ) AS distance FROM post HAVING distance < ? ORDER BY distance LIMIT 0 , ?", [lat, lng, lat, distance, max]) do
+      {:ok, %Mariaex.Result{rows: rows}} ->
+        rows
+      _ -> 
+        false
+    end
   end
 
 end
