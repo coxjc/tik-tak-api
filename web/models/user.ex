@@ -19,8 +19,8 @@ defmodule Api.User do
   def register_changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:lat, :lng])
-    |> put_assoc(:phone, params.phone)
     |> validate_required([:lat, :lng])
+    |> put_assoc(:phone, params.phone)
   end
 
   def update_location_changeset(struct, params \\ %{}) do

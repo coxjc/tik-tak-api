@@ -3,7 +3,7 @@ defmodule Api.Phone do
 
   alias Api.Repo
 
-  @phone_regex ~r/^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})?\s*$/ 
+  @phone_regex ~r/^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})?\s*$/
 
   schema "phone" do
     field :number, :string
@@ -20,6 +20,7 @@ defmodule Api.Phone do
     |> cast(params, [:number])
     |> validate_required([:number])
     |> put_format_number
+    |> put_change(:code_sent, Ecto.DateTime.utc)
     |> unique_constraint(:number)
     |> put_code
   end
@@ -28,23 +29,23 @@ defmodule Api.Phone do
     struct
     |> cast(params, [])
     |> put_code
-  end 
+  end
 
   def use_code_changeset(struct, params \\ %{})  do
     struct
     |> cast(params, [])
-    |> put_change(:verified, true) 
-    |> put_change(:code, nil) 
-    |> put_change(:code_sent, nil) 
+    |> put_change(:verified, true)
+    |> put_change(:code, nil)
+    |> put_change(:code_sent, nil)
   end
 
   defp put_format_number(changeset) do
     case format_number(changeset.changes.number) do
-      nil -> 
-        changeset 
+      nil ->
+        changeset
         |> add_error(:number, "Invalid format")
       number ->
-        changeset 
+        changeset
         |> put_change(:number, number)
     end
   end
@@ -53,18 +54,18 @@ defmodule Api.Phone do
     case Regex.match?(@phone_regex, param) do
       true ->
         # parse the phone number into specific format
-        number = Regex.replace(@phone_regex, param, "\\1-\\2-\\3-\\4") 
-        # if the phone number did not include a country code, add USA 1 to beginning 
+        number = Regex.replace(@phone_regex, param, "\\1-\\2-\\3-\\4")
+        # if the phone number did not include a country code, add USA 1 to beginning
         if String.slice(number, 0..0) == "-" do
           number = String.replace_leading(number, "-", "1-")
         end
-        number 
+        number
       false ->
         nil
     end
   end
 
-  # changeset used to verify someone's number 
+  # changeset used to verify someone's number
   def verify_changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [], [])
@@ -72,9 +73,9 @@ defmodule Api.Phone do
   end
 
   # random code generator for sms
-  # puts code in changeset 
+  # puts code in changeset
   defp put_code(struct, params \\ %{}) do
-    struct 
+    struct
     |> cast(params, [], [])
     |> put_change(:code, Integer.to_string(Enum.random(1000000..9999999)))
   end

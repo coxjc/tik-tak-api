@@ -29,7 +29,7 @@ defmodule Api.Vote do
   end
 
   defp validate_vote_range(changeset = %Ecto.Changeset{changes: %{score: score}}) do
-    case score in [-1, 0, 1] do 
+    case score in [-1, 0, 1] do
       true ->
         changeset
       false ->
@@ -37,6 +37,7 @@ defmodule Api.Vote do
     end
   end
 
+  # if the new vote is not a change, then just return the original changeset
   defp validate_vote_range(changeset = %Ecto.Changeset{changes: %{}}) do
     changeset
   end

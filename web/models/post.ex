@@ -27,9 +27,9 @@ defmodule Api.Post do
   end
 
   def update_score_changeset(struct, params \\ %{}) do
-    struct 
-    |> cast(params, [])
-    |> put_change(:score, params.score)
+    struct
+    |> cast(params, [:score])
+    |> validate_required([:score])
   end
 
 end
