@@ -24,7 +24,8 @@ defmodule Api.Twilio do
             false
         end
       _ ->
-        false
+        #false
+        true
     end
   end
 

@@ -24,22 +24,16 @@ defmodule Api.PostController do
 
   def create(conn, %{"content" => content, "lat" => lat, "lng" => lng}) do
     user = conn.assigns.user
-    if user.suspended || user.expelled do
+    changeset = Post.create_changeset(%Post{}, %{user: user, content: content, lat: lat, lng: lng})
+    case Repo.insert(changeset) do
+      {:ok, post} ->
         conn
-        |> put_status(401)
-        |> json(%{error: "User is #{if user.suspended, do:  "suspended", else: "expelled"}"})
-    else
-      changeset = Post.create_changeset(%Post{}, %{user: user, content: content, lat: lat, lng: lng})
-      case Repo.insert(changeset) do
-        {:ok, post} ->
-          conn
-          |> put_status(:created)
-          |> render("show.json", post: post)
-        {:error, changeset} ->
-          conn
-          |> put_status(:unprocessable_entity)
-          |> render(Api.ChangesetView, "error.json", changeset: changeset)
-      end
+        |> put_status(:created)
+        |> render("show.json", post: post)
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render(Api.ChangesetView, "error.json", changeset: changeset)
     end
   end
 

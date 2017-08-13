@@ -10,29 +10,30 @@ defmodule Api.AuthTokenPlug do
 
   def call(conn, repo) do
     case get_req_header(conn, "auth-token") do
-      [auth_token_string | _tail] -> 
+      [auth_token_string | _tail] ->
         auth_token = auth_token_string && repo.get_by(AuthToken, token:  auth_token_string)
       _ ->
         auth_token = nil
     end
     case auth_token do
-      nil -> 
+      nil ->
         user = nil
       _ ->
         user = repo.get_by(User, id: auth_token.user_id)
     end
-    conn 
+    conn
     |> assign(:auth_token, auth_token)
     |> assign(:user, user)
   end
 
   def authenticate_auth_token(conn, _opts) do
-    if AuthToken.valid?(conn.assigns.auth_token) do 
+    if AuthToken.valid?(conn.assigns.auth_token) && !User.is_suspended?(conn.assigns.user) &&
+      !User.is_expelled?(conn.assigns.user) do
        conn
-    else 
-      conn 
-      |> put_resp_content_type("text/plain") 
-      |> send_resp(403, "No valid 'auth-token' header present!")
+    else
+      conn
+      |> put_resp_content_type("text/plain")
+      |> send_resp(403, "Not authorized")
       |> halt
     end
   end
