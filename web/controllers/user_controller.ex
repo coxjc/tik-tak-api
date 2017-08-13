@@ -55,13 +55,26 @@ defmodule Api.UserController do
     end
   end
 
-  def delete(conn, %{"id" => id}) do
-    user = Repo.get!(User, id)
-
-    # Here we use delete! (with a bang) because we expect
-    # it to always work (and if it does not, it will raise).
-    Repo.delete!(user)
-
-    send_resp(conn, :no_content, "")
+  def suspend(conn, %{"id" => user_id}) do
+    case Repo.get(User, user_id) do
+      nil ->
+        conn |> put_status(:unprocessable_entity) |> json(%{error: "User not found"})
+      user ->
+        user_changeset = User.suspend_user_changeset(user)
+        Repo.update!(user_changeset)
+        conn |> put_status(200) |> json(%{message: "User suspended for 24 hours"})
+    end
   end
+
+  def expel(conn, %{"id" => user_id}) do
+    case Repo.get(User, user_id) do
+    nil ->
+      conn |> put_status(:unprocessable_entity) |> json(%{error: "User not found"})
+    user ->
+      user_changeset = User.expel_user_changeset(user)
+      Repo.update!(user_changeset)
+      conn |> put_status(200) |> json(%{message: "User expelled"})
+    end
+  end
+
 end
