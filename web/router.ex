@@ -4,12 +4,13 @@ defmodule Api.Router do
   pipeline :api do
     plug :accepts, ["json"]
     plug Api.AuthTokenPlug, repo: Api.Repo
+    plug Api.AdminPlug, repo: Api.Repo
   end
 
   scope "/api", Api do
     pipe_through :api
     post "/phones/verify", PhoneController, :verify
-    resources "/users", UserController
+    resources "/users", UserController, only: [:create]
     resources "/phones", PhoneController
     resources "/posts", PostController, except: [:create]
     resources "/auth_tokens", AuthTokenController
@@ -19,7 +20,14 @@ defmodule Api.Router do
     pipe_through [:api, :authenticate_auth_token]
     resources "/posts", PostController, only: [:create]
     resources "/flags", FlagController, only: [:create]
-    post "/vote", VoteController, :vote 
+    post "/vote", VoteController, :vote
+  end
+
+  scope "/admin", Api do
+    pipe_through [:api, :is_admin?]
+    resources "/flags", FlagController, except: [:create]
+    post "/users/suspend", UserController, :suspend
+    post "/users/expel", UserController, :expel
   end
 
 end
