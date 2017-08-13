@@ -17,8 +17,10 @@ defmodule Api.VoteController do
         case (from(v in Vote, where: v.user_id == ^(user.id) and v.post_id == ^post_id) |> Repo.one) do
           nil -> 
             changeset = Vote.changeset(%Vote{}, %{user: user, post: post, score: score})
+            post_changeset = Post.update_score_changeset(post, %{score: score})
             case Repo.insert(changeset) do
               {:ok, vote} ->
+                Repo.update!(post_changeset)
                 conn
                 |> put_status(:created)
                 |> render("show.json", vote: vote)
@@ -31,6 +33,10 @@ defmodule Api.VoteController do
             new_vote = Vote.update_changeset(cur_vote, %{score: score})
             case Repo.update(new_vote) do
               {:ok, vote} ->
+                if cur_vote.score != score do
+                  post_changeset = Post.update_score_changeset(post, %{score: score})
+                  Repo.update!(post_changeset)
+                end
                 conn
                 |> put_status(:created)
                 |> render("show.json", vote: vote)
