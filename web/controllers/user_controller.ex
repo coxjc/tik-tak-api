@@ -7,10 +7,10 @@ defmodule Api.UserController do
   alias Api.Twilio
 
   def create(conn, %{"number" => phone_number, "lat" => lat, "lng" => lng}) do
-    # check if there is already a user with this number. if so, send a code 
+    # check if there is already a user with this number. if so, send a code
     case Phone.format_number(phone_number) do
       nil ->
-        conn 
+        conn
         |> put_status(:unprocessable_entity)
         |> json(%{error: "Not a valid mobile phone number"})
       formatted_number ->
@@ -18,7 +18,7 @@ defmodule Api.UserController do
           nil ->
             case Twilio.phone_number_is_mobile?(%{number: formatted_number}) do
               false ->
-                conn 
+                conn
                 |> put_status(:unprocessable_entity)
                 |> json(%{error: "Not a valid mobile phone number"})
               true ->
@@ -31,7 +31,7 @@ defmodule Api.UserController do
                         Task.async(Twilio, :send_verification_sms, [%{number: phone.number, verification_code: phone.code}])
                         conn
                         |> put_status(:created)
-                        |> json(%{message: "Register code sent to #{phone.number}"}) 
+                        |> json(%{message: "Register code sent to #{phone.number}"})
                       {:error, changeset} ->
                         Repo.delete!(phone)
                         conn
@@ -50,7 +50,7 @@ defmodule Api.UserController do
             Task.async(Twilio, :send_verification_sms, [%{number: cur_phone.number, verification_code: phone.code}])
             conn
             |> put_status(:created)
-            |> json(%{message: "Login code sent to #{formatted_number}"}) 
+            |> json(%{message: "Login code sent to #{formatted_number}"})
         end
     end
   end

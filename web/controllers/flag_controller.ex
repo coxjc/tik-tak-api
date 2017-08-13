@@ -16,19 +16,20 @@ defmodule Api.FlagController do
       nil ->
         conn
         |> put_status(:unprocessable_entity)
-        |> json(%{error: "User not found"}) 
+        |> json(%{error: "User not found"})
       user ->
         case Repo.get(Post, post_id) do
-          nil -> 
+          nil ->
             conn
             |> put_status(:unprocessable_entity)
-            |> json(%{error: "User not found"}) 
+            |> json(%{error: "User not found"})
           post ->
+            # create a flag with the flagging user, the post, and why it's being flagged
             post_changeset = Flag.changeset(%Flag{}, %{flagger: conn.assigns.user, post: post, reason: reason})
             case Repo.insert(post_changeset) do
               {:ok, flag} ->
                 conn
-                |> json(%{message: "Reported"}) 
+                |> json(%{message: "Reported"})
               {:error, error} ->
                 conn
                 |> put_status(:unprocessable_entity)

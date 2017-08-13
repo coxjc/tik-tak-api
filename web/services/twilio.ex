@@ -5,9 +5,10 @@ defmodule Api.Twilio do
   def send_verification_sms(%{number: number, verification_code: code}) do
     msg = Messenger.create(Application.get_env(:twilex, :from_number), number, "Your verification code is: #{code}")
     case msg do
-      %{code: response_code, message: response_message} -> 
+      %{code: response_code, message: response_message} ->
         IO.puts "Sent #{code} to #{number}"
-      _ -> 
+      error ->
+        IO.inspect(error)
         IO.puts "Error sending #{code} to #{number}"
     end
   end
@@ -17,9 +18,9 @@ defmodule Api.Twilio do
     case resp do
       %HTTPoison.Response{status_code: 200, body: body} ->
         case Poison.Parser.parse!(body) do
-          %{"carrier" => %{"type" => "mobile"}} -> 
+          %{"carrier" => %{"type" => "mobile"}} ->
             true
-          _ -> 
+          _ ->
             false
         end
       _ ->
