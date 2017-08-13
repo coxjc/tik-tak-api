@@ -11,6 +11,7 @@ defmodule Api.User do
     has_one :auth_tokens, Api.AuthToken
     has_many :posts, Api.Post
     has_many :votes, Api.Vote
+    has_many :flags, Api.Vote
 
     timestamps()
   end

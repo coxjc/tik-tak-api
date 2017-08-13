@@ -10,6 +10,7 @@ defmodule Api.Post do
 
     belongs_to :user, Api.User
     has_many :votes, Api.Vote
+    has_many :flags, Api.Flag
 
     timestamps()
   end

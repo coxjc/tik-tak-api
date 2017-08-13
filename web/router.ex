@@ -18,6 +18,7 @@ defmodule Api.Router do
   scope "/api/managed", Api do
     pipe_through [:api, :authenticate_auth_token]
     resources "/posts", PostController, only: [:create]
+    resources "/flags", FlagController, only: [:create]
     post "/vote", VoteController, :vote 
   end
 
