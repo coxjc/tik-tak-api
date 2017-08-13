@@ -24,8 +24,13 @@ config :phoenix, :stacktrace_depth, 20
 # Configure your database
 config :api, Api.Repo,
   adapter: Ecto.Adapters.MySQL,
-  username: "root",
-  password: "",
-  database: "api_dev",
-  hostname: "localhost",
+  username: System.get_env("DB_UN"),
+  password: System.get_env("DB_PW"),
+  database: System.get_env("DB_NAME"),
+  hostname: System.get_env("DB_HOST"),
   pool_size: 10
+
+config :twilex,
+  sid: System.get_env("TWILIO_SID"),
+  token: System.get_env("TWILIO_TOKEN"),
+  from_number: System.get_env("TWILIO_FROM_NUMBER") 
