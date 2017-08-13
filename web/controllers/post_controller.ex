@@ -8,7 +8,7 @@ defmodule Api.PostController do
   def index(conn, %{"lat" => lat, "lng" => lng, "range" => radius, "max" => max}) do
     # TODO there is too much going on here. having to query from posts twice. works for now so fuck it
     posts = Enum.map(post_ids_by_distance(lat, lng, radius, max), fn([head|tail]) -> head end) |> posts_from_id
-    render(conn, "index.json", post: Enum.map(posts, (fn(x) -> Map.put(x, :score, sum_score x) end)))
+    render(conn, "index.json", post: posts)
   end
 
   def create(conn, %{"content" => content, "lat" => lat, "lng" => lng}) do
@@ -29,7 +29,6 @@ defmodule Api.PostController do
 
   def show(conn, %{"id" => id}) do
     post = Repo.get!(Post, id)
-    post = Map.put(post, :score, sum_score(post)) 
     render(conn, "show.json", post: post)
   end
 
@@ -59,10 +58,6 @@ defmodule Api.PostController do
 
   defp posts_from_id(ids) do
     from(p in Post, where: p.id in ^ids) |> Repo.all
-  end
-
-  defp sum_score(post) do
-    from(v in Vote, where: v.post_id == ^(post.id)) |> Repo.all |> Enum.map(fn(x) -> x.score end) |> Enum.sum
   end
 
   defp post_ids_by_distance(lat, lng, distance, max) do
