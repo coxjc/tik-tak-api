@@ -15,9 +15,14 @@ defmodule Api.Flag do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:reason, :active])
-    |> validate_required([:reason, :active])
+    |> cast(params, [:reason])
+    |> validate_required([:reason])
     |> put_assoc(:post, params.post)
     |> put_assoc(:flagger, params.flagger)
   end
+
+  def update_flag_changeset(struct, params \\ %{}) do
+    |> cast(params, [:active])
+  end
+
 end

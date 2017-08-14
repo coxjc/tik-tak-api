@@ -25,7 +25,7 @@ defmodule Api.Router do
 
   scope "/admin", Api do
     pipe_through [:api, :is_admin?]
-    resources "/flags", FlagController, except: [:create]
+    resources "/flags", FlagController, only: [:index, :show, :update]
     post "/users/suspend", UserController, :suspend
     post "/users/expel", UserController, :expel
   end

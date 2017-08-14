@@ -40,21 +40,28 @@ defmodule Api.FlagController do
   end
 
   def show(conn, %{"id" => id}) do
-    flag = Repo.get!(Flag, id)
-    render(conn, "show.json", flag: flag)
+    case Repo.get(Flag, id) do
+      nil ->  
+        conn |> put_status(:unprocessable_entity) |> json({message: "Flag not found"})
+      flag ->
+        render(conn, "show.json", flag: flag)
+    end
   end
 
-  def update(conn, %{"id" => id, "flag" => flag_params}) do
-    flag = Repo.get!(Flag, id)
-    changeset = Flag.changeset(flag, flag_params)
-
-    case Repo.update(changeset) do
-      {:ok, flag} ->
-        render(conn, "show.json", flag: flag)
-      {:error, changeset} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> render(Api.ChangesetView, "error.json", changeset: changeset)
+  def update(conn, %{"id" => id, "active" => active}) do
+    case Repo.get(Flag, id) do
+      nil -> 
+        conn |> put_status(:unprocessable_entity) |> json({message: "Flag not found"})
+      flag ->
+        changeset = Flag.update_flag_changeset(flag, %{active: active})
+        case Repo.update(changeset) do
+          {:ok, flag} ->
+            json({message: "Flag updated"})
+          {:error, changeset} ->
+            conn
+            |> put_status(:unprocessable_entity)
+            |> render(Api.ChangesetView, "error.json", changeset: changeset)
+        end
     end
   end
 
