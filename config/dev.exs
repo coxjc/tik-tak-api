@@ -33,4 +33,5 @@ config :api, Api.Repo,
 config :twilex,
   sid: System.get_env("TWILIO_SID"),
   token: System.get_env("TWILIO_TOKEN"),
-  from_number: System.get_env("TWILIO_FROM_NUMBER") 
+  from_number: System.get_env("TWILIO_FROM_NUMBER"),
+  flag_notify_number: System.get_env("TWILIO_FLAG_NOTIFY_NUMBER") 

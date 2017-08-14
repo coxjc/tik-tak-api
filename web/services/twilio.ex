@@ -29,4 +29,16 @@ defmodule Api.Twilio do
     end
   end
 
+  def flag_notify(flag_id) do
+    msg = Messenger.create(Application.get_env(:twilex, :from_number), Application.get_env(:twilex, :flag_notify_number), "A post has been flagged! Flag ID: #{flag_id}")
+    case msg do
+      %{code: response_code, message: response_message} ->
+        IO.puts response_message 
+        IO.puts "Notified"
+      error ->
+        IO.inspect(error)
+        IO.puts "Error notifying"
+    end
+  end
+
 end

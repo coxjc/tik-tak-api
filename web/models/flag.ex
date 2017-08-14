@@ -22,6 +22,7 @@ defmodule Api.Flag do
   end
 
   def update_flag_changeset(struct, params \\ %{}) do
+    struct
     |> cast(params, [:active])
   end
 

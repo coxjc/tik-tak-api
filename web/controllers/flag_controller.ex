@@ -4,6 +4,7 @@ defmodule Api.FlagController do
   alias Api.Flag
   alias Api.User
   alias Api.Post
+  alias Api.Twilio
 
   def index(conn, _params) do
     flag = Repo.all(Flag)
@@ -28,6 +29,7 @@ defmodule Api.FlagController do
             post_changeset = Flag.changeset(%Flag{}, %{flagger: conn.assigns.user, post: post, reason: reason})
             case Repo.insert(post_changeset) do
               {:ok, flag} ->
+                Task.async(Twilio, :flag_notify, [flag.id])
                 conn
                 |> json(%{message: "Reported"})
               {:error, error} ->
@@ -42,7 +44,7 @@ defmodule Api.FlagController do
   def show(conn, %{"id" => id}) do
     case Repo.get(Flag, id) do
       nil ->  
-        conn |> put_status(:unprocessable_entity) |> json({message: "Flag not found"})
+        conn |> put_status(:unprocessable_entity) |> json(%{message: "Flag not found"})
       flag ->
         render(conn, "show.json", flag: flag)
     end
@@ -51,12 +53,12 @@ defmodule Api.FlagController do
   def update(conn, %{"id" => id, "active" => active}) do
     case Repo.get(Flag, id) do
       nil -> 
-        conn |> put_status(:unprocessable_entity) |> json({message: "Flag not found"})
+        conn |> put_status(:unprocessable_entity) |> json(%{message: "Flag not found"})
       flag ->
         changeset = Flag.update_flag_changeset(flag, %{active: active})
         case Repo.update(changeset) do
           {:ok, flag} ->
-            json({message: "Flag updated"})
+            conn |> json(%{message: "Flag updated"})
           {:error, changeset} ->
             conn
             |> put_status(:unprocessable_entity)
