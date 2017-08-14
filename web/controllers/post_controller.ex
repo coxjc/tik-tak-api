@@ -8,16 +8,16 @@ defmodule Api.PostController do
     # TODO there is too much going on here. having to query from posts twice. works for now so fuck it
     case format do
       "new" ->
-        posts = Enum.map(new_post_ids(lat, lng, radius, max), fn([head|tail]) -> head end) |> posts_from_id
+        posts = Enum.map(new_post_ids(lat, lng, radius, max), fn([head|tail]) -> head end) |> visible_posts_from_ids
       _ ->
-        posts = Enum.map(hot_post_ids(lat, lng, radius, 3, max), fn([head|tail]) -> head end) |> posts_from_id
+        posts = Enum.map(hot_post_ids(lat, lng, radius, 3, max), fn([head|tail]) -> head end) |> visible_posts_from_ids
     end
     render(conn, "index.json", post: posts)
   end
 
   def index(conn, %{"lat" => lat, "lng" => lng, "range" => radius, "max" => max}) do
     # TODO there is too much going on here. having to query from posts twice. works for now so fuck it
-    posts = Enum.map(hot_post_ids(lat, lng, radius, 3, max), fn([head|tail]) -> head end) |> posts_from_id
+    posts = Enum.map(hot_post_ids(lat, lng, radius, 3, max), fn([head|tail]) -> head end) |> visible_posts_from_ids
     render(conn, "index.json", post: posts)
   end
 
@@ -37,16 +37,9 @@ defmodule Api.PostController do
     end
   end
 
-'''
-  def show(conn, %{"id" => id}) do
+  def update(conn, %{"id" => id, "visible" => visible}) do
     post = Repo.get!(Post, id)
-    render(conn, "show.json", post: post)
-  end
-'''
-
-  def update(conn, %{"id" => id, "post" => post_params}) do
-    post = Repo.get!(Post, id)
-    changeset = Post.changeset(post, post_params)
+    changeset = Post.hide_post_changeset(post, %{visible: visible})
 
     case Repo.update(changeset) do
       {:ok, post} ->
@@ -58,7 +51,6 @@ defmodule Api.PostController do
     end
   end
 
-'''
   def delete(conn, %{"id" => id}) do
     post = Repo.get!(Post, id)
 
@@ -68,10 +60,9 @@ defmodule Api.PostController do
 
     send_resp(conn, :no_content, "")
   end
-  '''
 
-  defp posts_from_id(ids) do
-    from(p in Post, where: p.id in ^ids) |> Repo.all
+  defp visible_posts_from_ids(ids) do
+    from(p in Post, where: p.id in ^ids && p.visible == true) |> Repo.all
   end
 
 ############################################

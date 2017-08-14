@@ -32,4 +32,9 @@ defmodule Api.Post do
     |> validate_required([:score])
   end
 
+  def hide_post_changeset(struct, params \\ %{visible: false}) do
+    struct
+    |> cast(params, [:visible])
+  end
+
 end

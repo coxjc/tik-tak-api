@@ -12,7 +12,7 @@ defmodule Api.Router do
     post "/phones/verify", PhoneController, :verify
     resources "/users", UserController, only: [:create]
     resources "/phones", PhoneController
-    resources "/posts", PostController, except: [:create]
+    resources "/posts", PostController, except: [:create, :update, :delete]
     resources "/auth_tokens", AuthTokenController
   end
 
@@ -28,6 +28,7 @@ defmodule Api.Router do
     resources "/flags", FlagController, only: [:index, :show, :update]
     post "/users/suspend", UserController, :suspend
     post "/users/expel", UserController, :expel
+    resources "/posts", PostController, only: [:update, :delete]
   end
 
 end
