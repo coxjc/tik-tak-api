@@ -62,7 +62,7 @@ defmodule Api.PostController do
   end
 
   defp visible_posts_from_ids(ids) do
-    from(p in Post, where: p.id in ^ids && p.visible == true) |> Repo.all
+    from(p in Post, where: p.id in ^ids and p.visible == true) |> Repo.all
   end
 
 ############################################
