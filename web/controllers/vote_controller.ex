@@ -21,10 +21,12 @@ defmodule Api.VoteController do
             post_changeset = Post.update_score_changeset(post, %{score: (post.score + score)})
             case Repo.insert(changeset) do
               {:ok, vote} ->
-                Repo.update!(post_changeset)
+                upd_post = Repo.update!(post_changeset)
+                IO.inspect upd_post
                 conn
                 |> put_status(:created)
                 |> render("show.json", vote: vote)
+                |> json(%{vote: vote.score, score: upd_post.score})
               {:error, changeset} ->
                 conn
                 |> put_status(:unprocessable_entity)
