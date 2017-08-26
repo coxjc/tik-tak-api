@@ -21,6 +21,11 @@ defmodule Api.PostController do
     render(conn, "index.json", post: posts)
   end
 
+  def my_posts(conn, _param) do
+    user_id = conn.assigns.user.id
+    posts = from(p in Post, where: p.user_id == ^user_id) |> Repo.all
+    render(conn, "index.json", post: posts)
+  end
 
   def create(conn, %{"content" => content, "lat" => lat, "lng" => lng}) do
     user = conn.assigns.user
