@@ -13,7 +13,8 @@ defmodule Api.PostView do
     %{id: post.id,
       content: post.content,
       score: post.score,
-      inserted_at: post.inserted_at
+      inserted_at: post.inserted_at,
+      rating: post.rating
     }
   end
 end

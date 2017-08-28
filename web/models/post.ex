@@ -6,6 +6,7 @@ defmodule Api.Post do
     field :score, :integer, default: 0
     field :lat, :float
     field :lng, :float
+    field :rating, :float, virtual: true, default: 0
     field :visible, :boolean, default: true
 
     belongs_to :user, Api.User
