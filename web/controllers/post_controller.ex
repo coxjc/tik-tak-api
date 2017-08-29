@@ -12,7 +12,6 @@ defmodule Api.PostController do
       _ ->
       posts = Enum.map(hot_post_ids(lat, lng, radius, 3, max), fn([head|tail]) -> head end) |> visible_posts_from_ids 
               |> Enum.map(fn(post) -> Map.put(post, :rating, calc_rating(post, 3)) end)
-    IO.inspect posts
     end
     render(conn, "index.json", post: posts)
   end
@@ -74,7 +73,6 @@ defmodule Api.PostController do
   end
 
   defp calc_rating(post, gravity) do
-    IO.puts hours_old(post)
     (post.score / :math.pow(hours_old(post) + 2,  gravity))
   end
 
@@ -93,7 +91,6 @@ defmodule Api.PostController do
       {:ok, %Mariaex.Result{rows: rows}} ->
         rows
       error ->
-        IO.inspect error
         []
     end
   end
@@ -104,9 +101,7 @@ defmodule Api.PostController do
     case Ecto.Adapters.SQL.query(Repo, "SELECT id, ( 3959 * acos ( cos ( radians(?) ) * cos( radians( lat ) ) * cos( radians( lng ) - radians(?) ) + sin ( radians(?) ) * sin( radians( lat ) ) ) ) AS distance, (score / (POWER(( SELECT (UNIX_TIMESTAMP(UTC_TIMESTAMP())-UNIX_TIMESTAMP(inserted_at)) / 3600) + 2, ?))) as rating FROM post HAVING distance < ? ORDER BY rating DESC LIMIT 0 , ?", [lat, lng, lat, gravity, distance, max]) do
       {:ok, %Mariaex.Result{rows: rows}} ->
         rows
-        IO.inspect rows
       error ->
-        IO.inspect error
         []
     end
   end
