@@ -4,22 +4,25 @@ defmodule Api.PostController do
   alias Api.Post
   alias Api.Vote
 
-  def index(conn, %{"lat" => lat, "lng" => lng, "range" => radius, "max" => max, "format" => format}) do
+  defp range_in_miles, do: 5
+  defp gravity, do: 3
+
+  def index(conn, %{"lat" => lat, "lng" => lng, "max" => max, "format" => format}) do
     # TODO there is too much going on here. having to query from posts twice. works for now so fuck it
     case format do
       "new" ->
-        posts = Enum.map(new_post_ids(lat, lng, radius, max), fn([head|tail]) -> head end) |> visible_posts_from_ids
+        posts = Enum.map(new_post_ids(lat, lng, range_in_miles, max), fn([head|tail]) -> head end) |> visible_posts_from_ids
       _ ->
-      posts = Enum.map(hot_post_ids(lat, lng, radius, 3, max), fn([head|tail]) -> head end) |> visible_posts_from_ids 
-              |> Enum.map(fn(post) -> Map.put(post, :rating, calc_rating(post, 3)) end)
+      posts = Enum.map(hot_post_ids(lat, lng, range_in_miles, gravity, max), fn([head|tail]) -> head end) |> visible_posts_from_ids 
+              |> Enum.map(fn(post) -> Map.put(post, :rating, calc_rating(post, gravity)) end)
     end
     render(conn, "index.json", post: posts)
   end
 
-  def index(conn, %{"lat" => lat, "lng" => lng, "range" => radius, "max" => max}) do
+  def index(conn, %{"lat" => lat, "lng" => lng, "max" => max}) do
     # TODO there is too much going on here. having to query from posts twice. works for now so fuck it
-    posts = Enum.map(hot_post_ids(lat, lng, radius, 3, max), fn([head|tail]) -> head end) |> visible_posts_from_ids
-              |> Enum.map(fn(post) -> Map.put(post, :rating, calc_rating(post, 3)) end)
+    posts = Enum.map(hot_post_ids(lat, lng, range_in_miles, gravity, max), fn([head|tail]) -> head end) |> visible_posts_from_ids
+              |> Enum.map(fn(post) -> Map.put(post, :rating, calc_rating(post, gravity)) end)
     render(conn, "index.json", post: posts)
   end
 
