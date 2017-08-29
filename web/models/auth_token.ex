@@ -1,6 +1,10 @@
 defmodule Api.AuthToken do
   use Api.Web, :model
 
+  @primary_key {:id, :binary_id, autogenerate: true}
+  @derive {Phoenix.Param, key: :id}
+  @foreign_key_type :binary_id
+
   schema "auth_token" do
     field :token, :string
     field :valid, :boolean, default: true

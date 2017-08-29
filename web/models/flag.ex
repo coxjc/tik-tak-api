@@ -1,6 +1,10 @@
 defmodule Api.Flag do
   use Api.Web, :model
 
+  @primary_key {:id, :binary_id, autogenerate: true}
+  @derive {Phoenix.Param, key: :id}
+  @foreign_key_type :binary_id
+
   schema "flag" do
     field :reason, :string
     field :active, :boolean, default: true 

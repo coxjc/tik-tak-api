@@ -3,7 +3,7 @@ defmodule Api.Repo.Migrations.AddUserIdToPost do
 
   def change do
     alter table(:post) do
-      add :user_id, references(:user, on_delete: :nothing)
+      add :user_id, references(:user, on_delete: :nothing, type: :uuid)
     end
   end
 end

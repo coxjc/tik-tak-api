@@ -15,6 +15,8 @@ defmodule Api.Web do
   Do NOT define functions inside the quoted expressions
   below.
   """
+  @primary_key {:id, :binary_id, autogenerate: true}
+  @foreign_key_type :binary_id
 
   def model do
     quote do

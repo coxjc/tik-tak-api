@@ -1,6 +1,10 @@
 defmodule Api.Post do
   use Api.Web, :model
 
+  @primary_key {:id, :binary_id, autogenerate: true}
+  @derive {Phoenix.Param, key: :id}
+  @foreign_key_type :binary_id
+
   schema "post" do
     field :content, :string
     field :score, :integer, default: 0

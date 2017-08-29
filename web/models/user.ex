@@ -1,6 +1,10 @@
 defmodule Api.User do
   use Api.Web, :model
 
+  @primary_key {:id, :binary_id, autogenerate: true}
+  @derive {Phoenix.Param, key: :id}
+  @foreign_key_type :binary_id
+
   schema "user" do
     field :lat, :float
     field :lng, :float
