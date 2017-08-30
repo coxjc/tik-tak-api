@@ -72,7 +72,13 @@ defmodule Api.PostController do
   end
 
   defp visible_posts_from_ids(ids) do
-    from(p in Post, where: p.id in ^ids and p.visible == true) |> Repo.all
+    string_ids = Enum.map(ids, fn(id) -> load_id(id) end)
+    from(p in Post, where: p.id in ^string_ids and p.visible == true) |> Repo.all
+  end
+
+  defp load_id(id) do
+    {:ok, result} = Ecto.UUID.load(id)
+    result
   end
 
   defp calc_rating(post, gravity) do
@@ -80,9 +86,9 @@ defmodule Api.PostController do
   end
 
   defp hours_old(post) do
-  post_time = NaiveDateTime.to_erl(post.inserted_at) |> :calendar.datetime_to_gregorian_seconds
-  cur_time = NaiveDateTime.utc_now |> NaiveDateTime.to_erl |> :calendar.datetime_to_gregorian_seconds
-  (cur_time - post_time) / 3600
+    post_time = NaiveDateTime.to_erl(post.inserted_at) |> :calendar.datetime_to_gregorian_seconds
+    cur_time = NaiveDateTime.utc_now |> NaiveDateTime.to_erl |> :calendar.datetime_to_gregorian_seconds
+    (cur_time - post_time) / 3600
   end
 
 ############################################
