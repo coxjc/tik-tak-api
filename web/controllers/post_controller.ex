@@ -28,7 +28,7 @@ defmodule Api.PostController do
 
   def my_posts(conn, _param) do
     user_id = conn.assigns.user.id
-    posts = from(p in Post, where: p.user_id == ^user_id) |> Repo.all
+    posts = from(p in Post, where: p.user_id == ^user_id, order_by: [desc: p.inserted_at], limit: 20) |> Repo.all
     render(conn, "index.json", post: posts)
   end
 
