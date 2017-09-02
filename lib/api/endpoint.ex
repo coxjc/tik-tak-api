@@ -1,6 +1,8 @@
 defmodule Api.Endpoint do
   use Phoenix.Endpoint, otp_app: :api
 
+  plug CORSPlug
+
   socket "/socket", Api.UserSocket
 
   # Serve at "/" the static files from "priv/static" directory.

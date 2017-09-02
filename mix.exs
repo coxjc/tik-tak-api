@@ -39,7 +39,8 @@ defmodule Api.Mixfile do
      {:uuid, "~> 1.1"},
      {:phoenix_html, ">= 0.0.0"},
      {:twilex, ">= 0.0.0", override: true},
-     {:distillery, "~> 1.2.2", runtime: false}]
+     {:distillery, "~> 1.2.2", runtime: false},
+     {:cors_plug, "~> 1.2"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
