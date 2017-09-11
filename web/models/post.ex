@@ -8,10 +8,13 @@ defmodule Api.Post do
   schema "post" do
     field :content, :string
     field :score, :integer, default: 0
-    field :lat, :float
-    field :lng, :float
+    field :lat, :float, default: nil
+    field :lng, :float, default: nil
     field :rating, :float, virtual: true, default: 0
     field :visible, :boolean, default: true
+
+    field :is_comment, :boolean, default: false
+    field :parent_id, :binary_id, default: nil 
 
     belongs_to :user, Api.User
     has_many :votes, Api.Vote
@@ -28,6 +31,15 @@ defmodule Api.Post do
     |> cast(params, [:content, :lat, :lng])
     |> validate_required([:content, :lat, :lng])
     |> put_assoc(:user, params.user)
+    |> validate_length(:content, min: 1, max: 140)
+  end
+
+  def comment_changeset(struct, params \\ %{}) do
+    struct
+    |> cast(params, [:content, :parent_id])
+    |> validate_required([:content, :parent_id])
+    |> put_assoc(:user, params.user)
+    |> put_change(:is_comment, true)
     |> validate_length(:content, min: 1, max: 140)
   end
 
