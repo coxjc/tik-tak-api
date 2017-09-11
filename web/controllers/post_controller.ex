@@ -26,6 +26,11 @@ defmodule Api.PostController do
     render(conn, "index.json", post: posts)
   end
 
+  def comments(conn, %{"parent_id" => p_id}) do
+    comments = from(p in Post, where: p.is_comment and  p.parent_id == ^p_id and p.visible == true) |> Repo.all
+    render(conn, "index.json", post: comments)
+  end
+
   def my_posts(conn, _param) do
     user_id = conn.assigns.user.id
     posts = from(p in Post, where: p.user_id == ^user_id, order_by: [desc: p.inserted_at], limit: 20) |> Repo.all
@@ -35,6 +40,21 @@ defmodule Api.PostController do
   def create(conn, %{"content" => content, "lat" => lat, "lng" => lng}) do
     user = conn.assigns.user
     changeset = Post.create_changeset(%Post{}, %{user: user, content: content, lat: lat, lng: lng})
+    case Repo.insert(changeset) do
+      {:ok, post} ->
+        conn
+        |> put_status(:created)
+        |> render("show.json", post: post)
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render(Api.ChangesetView, "error.json", changeset: changeset)
+    end
+  end
+
+  def comment(conn, %{"content" => content, "parent_id" => p_id}) do
+    user = conn.assigns.user
+    changeset = Post.comment_changeset(%Post{}, %{user: user, content: content, parent_id: p_id})
     case Repo.insert(changeset) do
       {:ok, post} ->
         conn
@@ -96,7 +116,7 @@ defmodule Api.PostController do
 ############################################
 
   defp new_post_ids(lat, lng, distance, max) do
-    case Ecto.Adapters.SQL.query(Repo, "SELECT id, ( 3959 * acos ( cos ( radians(?) ) * cos( radians( lat ) ) * cos( radians( lng ) - radians(?) ) + sin ( radians(?) ) * sin( radians( lat ) ) ) ) AS distance FROM post HAVING distance < ? ORDER BY inserted_at DESC LIMIT 0 , ?", [lat, lng, lat, distance, max]) do
+    case Ecto.Adapters.SQL.query(Repo, "SELECT id, ( 3959 * acos ( cos ( radians(?) ) * cos( radians( lat ) ) * cos( radians( lng ) - radians(?) ) + sin ( radians(?) ) * sin( radians( lat ) ) ) ) AS distance FROM post WHERE is_comment = 0 HAVING distance < ? ORDER BY inserted_at DESC LIMIT 0 , ?", [lat, lng, lat, distance, max]) do
       {:ok, %Mariaex.Result{rows: rows}} ->
         rows
       error ->
@@ -107,7 +127,7 @@ defmodule Api.PostController do
   #https://medium.com/hacking-and-gonzo/how-hacker-news-ranking-algorithm-works-1d9b0cf2c08d
   defp hot_post_ids(lat, lng, distance, gravity, max) do
     {{_, _, _}, {hour, _, _}} = :os.timestamp |> :calendar.now_to_datetime
-    case Ecto.Adapters.SQL.query(Repo, "SELECT id, ( 3959 * acos ( cos ( radians(?) ) * cos( radians( lat ) ) * cos( radians( lng ) - radians(?) ) + sin ( radians(?) ) * sin( radians( lat ) ) ) ) AS distance, (score / (POWER(( SELECT (UNIX_TIMESTAMP(UTC_TIMESTAMP())-UNIX_TIMESTAMP(inserted_at)) / 3600) + 2, ?))) as rating FROM post HAVING distance < ? ORDER BY rating DESC LIMIT 0 , ?", [lat, lng, lat, gravity, distance, max]) do
+    case Ecto.Adapters.SQL.query(Repo, "SELECT id, ( 3959 * acos ( cos ( radians(?) ) * cos( radians( lat ) ) * cos( radians( lng ) - radians(?) ) + sin ( radians(?) ) * sin( radians( lat ) ) ) ) AS distance, (score / (POWER(( SELECT (UNIX_TIMESTAMP(UTC_TIMESTAMP())-UNIX_TIMESTAMP(inserted_at)) / 3600) + 2, ?))) as rating FROM post WHERE is_comment = 0 HAVING distance < ? ORDER BY rating DESC LIMIT 0 , ?", [lat, lng, lat, gravity, distance, max]) do
       {:ok, %Mariaex.Result{rows: rows}} ->
         rows
       error ->

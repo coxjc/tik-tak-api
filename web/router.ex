@@ -13,6 +13,8 @@ defmodule Api.Router do
     resources "/users", UserController, only: [:create]
     resources "/phones", PhoneController
     resources "/posts", PostController, except: [:create, :update, :delete]
+    get "/comments", PostController, :comments
+    post "/comments", PostController, :comment
     resources "/auth_tokens", AuthTokenController
   end
 
