@@ -15,7 +15,9 @@ defmodule Api.PostView do
       score: post.score,
       inserted_at: post.inserted_at,
       rating: post.rating,
-      visible: post.visible
+      visible: post.visible,
+      is_comment: post.is_comment,
+      parent_id: post.parent_id
     }
   end
 end
