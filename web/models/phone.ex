@@ -13,7 +13,7 @@ defmodule Api.Phone do
     field :number, :string
     field :code, :string
     field :code_sent, Ecto.DateTime
-    field :attempts, :integer
+    field :attempts, :integer, default: 0
     field :verified, :boolean, default: false
     has_one :user, Api.User
 
@@ -26,6 +26,7 @@ defmodule Api.Phone do
     |> validate_required([:number])
     |> put_format_number
     |> put_change(:code_sent, Ecto.DateTime.utc)
+    |> put_change(:attempts, 0)
     |> unique_constraint(:number)
     |> put_code
   end
@@ -33,6 +34,7 @@ defmodule Api.Phone do
   def login_changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [])
+    |> put_change(:attempts, 0)
     |> put_code
   end
 
@@ -42,6 +44,13 @@ defmodule Api.Phone do
     |> put_change(:verified, true)
     |> put_change(:code, nil)
     |> put_change(:code_sent, nil)
+    |> put_change(:attempts, nil)
+  end
+
+  def add_attempt_changeset(struct, params \\ %{}) do
+    struct 
+    |> cast(params, [])
+    |> put_change(:attempts, struct.attempts + 1)
   end
 
   defp put_format_number(changeset) do
