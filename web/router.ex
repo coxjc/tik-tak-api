@@ -14,7 +14,6 @@ defmodule Api.Router do
     resources "/phones", PhoneController
     resources "/posts", PostController, except: [:create, :update, :delete]
     get "/comments", PostController, :comments
-    post "/comments", PostController, :comment
     resources "/auth_tokens", AuthTokenController
   end
 
@@ -24,6 +23,7 @@ defmodule Api.Router do
     resources "/posts", PostController, only: [:create]
     resources "/flags", FlagController, only: [:create]
     post "/vote", VoteController, :vote
+    post "/comments", PostController, :comment
   end
 
   scope "/admin", Api do
