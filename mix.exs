@@ -19,7 +19,7 @@ defmodule Api.Mixfile do
   def application do
     [mod: {Api, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_ecto, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :mariaex, :twilex, :uuid]]
+                    :phoenix_ecto, :mariaex, :twilex, :uuid, :edeliver]]
   end
 
   # Specifies which paths to compile per environment.
@@ -39,8 +39,10 @@ defmodule Api.Mixfile do
      {:uuid, "~> 1.1"},
      {:phoenix_html, ">= 0.0.0"},
      {:twilex, ">= 0.0.0", override: true},
-     {:distillery, "~> 1.2.2", runtime: false},
-     {:cors_plug, "~> 1.2"}]
+     {:cors_plug, "~> 1.2"},
+     {:edeliver, "~> 1.4.2"},
+     {:distillery, "~> 1.4"}
+    ]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
