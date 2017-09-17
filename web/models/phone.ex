@@ -13,6 +13,7 @@ defmodule Api.Phone do
     field :number, :string
     field :code, :string
     field :code_sent, Ecto.DateTime
+    field :attempts, :integer
     field :verified, :boolean, default: false
     has_one :user, Api.User
 
@@ -81,7 +82,7 @@ defmodule Api.Phone do
   defp put_code(struct, params \\ %{}) do
     struct
     |> cast(params, [], [])
-    |> put_change(:code, Integer.to_string(Enum.random(1000000..9999999)))
+    |> put_change(:code, Integer.to_string(Enum.random(1000..9999)))
   end
 
 end
