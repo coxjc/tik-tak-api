@@ -39,7 +39,6 @@ defmodule Api.Mixfile do
      {:uuid, "~> 1.1"},
      {:phoenix_html, ">= 0.0.0"},
      {:twilex, ">= 0.0.0", override: true},
-     {:cors_plug, "~> 1.2"},
      {:edeliver, "~> 1.4.2"},
      {:distillery, "~> 1.4"}
     ]

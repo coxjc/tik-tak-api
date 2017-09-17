@@ -1,7 +1,6 @@
 defmodule Api.Endpoint do
   use Phoenix.Endpoint, otp_app: :api
 
-  plug CORSPlug
 
   socket "/socket", Api.UserSocket
 
