@@ -14,6 +14,7 @@ config :api, Api.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "GWNPtBxkaCyYgDItM/qfQyIrf83pBVKtQqW1pTZY0ELwqrPbbMBPqHY14D4PPUBD",
   render_errors: [view: Api.ErrorView, accepts: ~w(json)],
+  check_origin: false,
   pubsub: [name: Api.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
