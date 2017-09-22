@@ -1,3 +1,8 @@
+if [ "$PROD_OR_STAGE" != "prod" ] && [ "$PROD_OR_STAGE" != "stage" ]; then
+  echo 'Specify env var "PROD_OR_STAGE". Choose "prod" or "stage"'
+  exit 1 
+fi
+
 APP="api"
 
 BUILD_HOST="tiktakappstaging.tech"
@@ -14,7 +19,7 @@ DELIVER_TO="/home/deploy"
 
 # For *Phoenix* projects, symlink prod.secret.exs to our tmp source
 pre_erlang_get_and_update_deps() {
-  local _prod_secret_path="/home/deploy/prod.secret.exs"
+  local _prod_secret_path="/home/deploy/prod.secret.exs.$PROD_OR_STAGE"
   if [ "$TARGET_MIX_ENV" = "prod" ]; then
     __sync_remote "
       ln -sfn '$_prod_secret_path' '$BUILD_AT/config/prod.secret.exs'
