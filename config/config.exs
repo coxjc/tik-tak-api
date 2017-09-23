@@ -18,6 +18,10 @@ config :api, Api.Endpoint,
   pubsub: [name: Api.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
+config :api, Api.Repo,
+  adapter: Ecto.Adapters.MySQL,
+  charset: "utf8mb4"
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

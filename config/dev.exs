@@ -23,7 +23,6 @@ config :phoenix, :stacktrace_depth, 20
 
 # Configure your database
 config :api, Api.Repo,
-  adapter: Ecto.Adapters.MySQL,
   username: System.get_env("DB_UN"),
   password: System.get_env("DB_PW"),
   database: System.get_env("DB_NAME"),
