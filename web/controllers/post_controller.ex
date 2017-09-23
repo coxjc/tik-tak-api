@@ -39,6 +39,7 @@ defmodule Api.PostController do
 
   def create(conn, %{"content" => content, "lat" => lat, "lng" => lng}) do
     user = conn.assigns.user
+    content = String.trim content
     changeset = Post.create_changeset(%Post{}, %{user: user, content: content, lat: lat, lng: lng})
     case Repo.insert(changeset) do
       {:ok, post} ->
@@ -54,6 +55,7 @@ defmodule Api.PostController do
 
   def comment(conn, %{"content" => content, "parent_id" => p_id}) do
     user = conn.assigns.user
+    content = String.trim content
     changeset = Post.comment_changeset(%Post{}, %{user: user, content: content, parent_id: p_id})
     case Repo.insert(changeset) do
       {:ok, post} ->
