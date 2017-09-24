@@ -24,8 +24,8 @@ defmodule Api.Twilio do
             false
         end
       _ ->
-        #false
-        true
+        # if prod, return false. else, return true
+        !Application.get_env(:twilex, :prod)
     end
   end
 
