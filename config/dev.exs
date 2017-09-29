@@ -35,3 +35,9 @@ config :twilex,
   from_number: System.get_env("TWILIO_FROM_NUMBER"),
   flag_notify_number: System.get_env("TWILIO_FLAG_NOTIFY_NUMBER"),
   prod: false 
+
+config :sentry,
+  dsn: "https://cb399e24debb4b4f92bccd364abd1d3d:681da569b9bd41459ef08ea51ba60955@sentry.io/223754",
+  enable_source_code_context: true,
+  root_source_code_path: File.cwd!,
+  included_environments: [:dev, :prod]
