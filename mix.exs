@@ -18,7 +18,7 @@ defmodule Api.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {Api, []},
-     applications: [:phoenix, :phoenix_pubsub, :phoenix_ecto, :cowboy, :logger, :gettext,
+     applications: [:phoenix, :phoenix_pubsub, :phoenix_ecto, :cowboy, :sentry, :logger, :gettext,
                     :phoenix_ecto, :mariaex, :twilex, :uuid, :edeliver]]
   end
 
@@ -35,12 +35,14 @@ defmodule Api.Mixfile do
      {:phoenix_ecto, "~> 3.0"},
      {:mariaex, ">= 0.0.0"},
      {:gettext, "~> 0.11"},
+     {:hackney, "~> 1.8", override: true},
      {:cowboy, "~> 1.0"},
      {:uuid, "~> 1.1"},
      {:phoenix_html, ">= 0.0.0"},
      {:twilex, ">= 0.0.0", override: true},
      {:edeliver, "~> 1.4.2"},
-     {:distillery, "~> 1.4"}
+     {:distillery, "~> 1.4"},
+     {:sentry, "~> 6.0.0"}
     ]
   end
 
