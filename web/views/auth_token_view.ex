@@ -5,7 +5,7 @@ defmodule Api.AuthTokenView do
     render_one(auth_token, Api.AuthTokenView, "auth_token.json")
   end
 
-  def render("auth_token.json", %{auth_token: auth_token}) do
-    %{token: auth_token.token,}
+  def render("auth_token.json", %{auth_token: auth_token, user_id: uid}) do
+    %{token: auth_token.token, user_id: uid}
   end
 end

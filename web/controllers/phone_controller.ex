@@ -25,7 +25,7 @@ defmodule Api.PhoneController do
       |> Repo.update! end end).()
       token = Repo.insert!(auth_token_changeset)
       phone = Repo.update!(phone_changeset)
-      conn |> put_status(:created) |> render(AuthTokenView, "auth_token.json", %{auth_token: token})
+      conn |> put_status(:created) |> render(AuthTokenView, "auth_token.json", %{auth_token: token, user_id: phone.user.id})
     end
   end
 
