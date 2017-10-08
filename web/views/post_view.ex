@@ -11,6 +11,7 @@ defmodule Api.PostView do
 
   def render("post.json", %{post: post}) do
     %{id: post.id,
+      user_id: post.user_id,
       content: post.content,
       score: post.score,
       inserted_at: post.inserted_at,
