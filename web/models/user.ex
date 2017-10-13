@@ -54,6 +54,18 @@ defmodule Api.User do
     |> put_change(:expelled, true)
   end
 
+  def incr_karma_changeset(struct, params \\ %{}) do
+    struct 
+    |> cast(params, [])
+    |> put_change(:takarma, struct.takarma + 1)
+  end
+
+  def decr_karma_changeset(struct, params \\ %{}) do
+    struct 
+    |> cast(params, [])
+    |> put_change(:takarma, struct.takarma + 1)
+  end
+
   defp one_day_from_now do
     {{a,b,c},{hh,mm,ss}} = :calendar.universal_time()
     {x,y,z} = :calendar.gregorian_days_to_date(:calendar.date_to_gregorian_days({a,b,c}) + 1)
