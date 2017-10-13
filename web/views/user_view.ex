@@ -18,6 +18,7 @@ defmodule Api.UserView do
       user: %{
         lat: user.lat,
         lng: user.lng,
+        takarma: user.takarma,
         suspended: user.suspended,
         suspended_until: user.suspended_until,
         expelled: user.expelled

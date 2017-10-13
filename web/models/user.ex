@@ -54,16 +54,28 @@ defmodule Api.User do
     |> put_change(:expelled, true)
   end
 
-  def incr_karma_changeset(struct, params \\ %{}) do
+  def incr_takarma_changeset(struct, params \\ %{}) do
     struct 
     |> cast(params, [])
     |> put_change(:takarma, struct.takarma + 1)
   end
 
-  def decr_karma_changeset(struct, params \\ %{}) do
+  def decr_takarma_changeset(struct, params \\ %{}) do
     struct 
     |> cast(params, [])
-    |> put_change(:takarma, struct.takarma + 1)
+    |> put_change(:takarma, struct.takarma - 1)
+  end
+
+  def double_decr_takarma_changeset(struct, params \\ %{}) do
+    struct 
+    |> cast(params, [])
+    |> put_change(:takarma, struct.takarma - 2)
+  end
+
+  def double_incr_takarma_changeset(struct, params \\ %{}) do
+    struct 
+    |> cast(params, [])
+    |> put_change(:takarma, struct.takarma + 2)
   end
 
   defp one_day_from_now do
