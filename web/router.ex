@@ -11,6 +11,7 @@ defmodule Api.Router do
 
   scope "/api", Api do
     pipe_through :api
+    get "/them", UserController, :them
     post "/phones/verify", PhoneController, :verify
     resources "/users", UserController, only: [:create]
     resources "/phones", PhoneController
@@ -22,6 +23,7 @@ defmodule Api.Router do
   scope "/api/managed", Api do
     pipe_through [:api, :authenticate_auth_token]
     get "/my_posts", PostController, :my_posts
+    get "/me", UserController, :me
     resources "/posts", PostController, only: [:create]
     resources "/flags", FlagController, only: [:create]
     post "/vote", VoteController, :vote

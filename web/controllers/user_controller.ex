@@ -55,6 +55,17 @@ defmodule Api.UserController do
     end
   end
 
+  def me(conn, %{}) do
+    user_id = conn.assigns.user.id
+    user = Repo.get!(User, user_id)
+    conn |> put_status(200) |> json(%{takarma: user.takarma})
+  end
+
+  def them(conn, %{"user_id" => id}) do
+    user = Repo.get!(User, id)
+    conn |> put_status(200) |> json(%{takarma: user.takarma})
+  end
+
   def suspend(conn, %{"id" => user_id}) do
     case Repo.get(User, user_id) do
       nil ->
