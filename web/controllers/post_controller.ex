@@ -59,6 +59,7 @@ defmodule Api.PostController do
     changeset = Post.comment_changeset(%Post{}, %{user: user, content: content, parent_id: p_id})
     case Repo.insert(changeset) do
       {:ok, post} ->
+        Repo.get!(Post, p_id) |> Post.incr_comment_count_changeset |> Repo.update!
         conn
         |> put_status(:created)
         |> render("show.json", post: post)

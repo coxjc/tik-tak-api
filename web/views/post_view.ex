@@ -18,7 +18,8 @@ defmodule Api.PostView do
       rating: post.rating,
       visible: post.visible,
       is_comment: post.is_comment,
-      parent_id: post.parent_id
+      parent_id: post.parent_id,
+      comment_count: post.comment_count
     }
   end
 end
