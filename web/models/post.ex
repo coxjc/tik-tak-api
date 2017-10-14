@@ -12,6 +12,7 @@ defmodule Api.Post do
     field :lng, :float, default: nil
     field :rating, :float, virtual: true, default: 0
     field :visible, :boolean, default: true
+    field :comment_count, :integer, default: 0 
 
     field :is_comment, :boolean, default: false
     field :parent_id, :binary_id, default: nil 
@@ -41,6 +42,18 @@ defmodule Api.Post do
     |> put_assoc(:user, params.user)
     |> put_change(:is_comment, true)
     |> validate_length(:content, min: 1, max: 140)
+  end
+
+  def incr_comment_count_changeset(struct, params \\ %{}) do
+    struct 
+    |> cast(params, [])
+    |> put_change(:comment_count, struct.comment_count + 1)
+  end
+
+  def decr_comment_count_changeset(struct, params \\ %{}) do
+    struct 
+    |> cast(params, [])
+    |> put_change(:comment_count, struct.comment_count - 1)
   end
 
   def update_score_changeset(struct, params \\ %{}) do
