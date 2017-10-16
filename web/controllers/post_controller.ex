@@ -33,7 +33,7 @@ defmodule Api.PostController do
 
   def my_posts(conn, _param) do
     user_id = conn.assigns.user.id
-    posts = from(p in Post, where: p.user_id == ^user_id and not p.is_comment, order_by: [desc: p.inserted_at], limit: 100) |> Repo.all
+    posts = from(p in Post, where: p.user_id == ^user_id and not p.is_comment, order_by: [desc: p.inserted_at]) |> Repo.all
     render(conn, "index.json", post: posts)
   end
 
@@ -119,7 +119,7 @@ defmodule Api.PostController do
 ############################################
 
   defp new_post_ids(lat, lng, distance, max) do
-    case Ecto.Adapters.SQL.query(Repo, "SELECT id, ( 3959 * acos ( cos ( radians(?) ) * cos( radians( lat ) ) * cos( radians( lng ) - radians(?) ) + sin ( radians(?) ) * sin( radians( lat ) ) ) ) AS distance FROM post WHERE is_comment = 0 HAVING distance < ? ORDER BY inserted_at DESC LIMIT 0 , ?", [lat, lng, lat, distance, max]) do
+    case Ecto.Adapters.SQL.query(Repo, "SELECT id, ( 3959 * acos ( cos ( radians(?) ) * cos( radians( lat ) ) * cos( radians( lng ) - radians(?) ) + sin ( radians(?) ) * sin( radians( lat ) ) ) ) AS distance FROM post WHERE is_comment = 0 HAVING distance < ? ORDER BY inserted_at DESC", [lat, lng, lat, distance]) do
       {:ok, %Mariaex.Result{rows: rows}} ->
         rows
       error ->
@@ -130,7 +130,7 @@ defmodule Api.PostController do
   #https://medium.com/hacking-and-gonzo/how-hacker-news-ranking-algorithm-works-1d9b0cf2c08d
   defp hot_post_ids(lat, lng, distance, gravity, max) do
     {{_, _, _}, {hour, _, _}} = :os.timestamp |> :calendar.now_to_datetime
-    case Ecto.Adapters.SQL.query(Repo, "SELECT id, ( 3959 * acos ( cos ( radians(?) ) * cos( radians( lat ) ) * cos( radians( lng ) - radians(?) ) + sin ( radians(?) ) * sin( radians( lat ) ) ) ) AS distance, (score / (POWER(( SELECT (UNIX_TIMESTAMP(UTC_TIMESTAMP())-UNIX_TIMESTAMP(inserted_at)) / 3600) + 2, ?))) as rating FROM post WHERE is_comment = 0 HAVING distance < ? ORDER BY rating DESC LIMIT 0 , ?", [lat, lng, lat, gravity, distance, max]) do
+    case Ecto.Adapters.SQL.query(Repo, "SELECT id, ( 3959 * acos ( cos ( radians(?) ) * cos( radians( lat ) ) * cos( radians( lng ) - radians(?) ) + sin ( radians(?) ) * sin( radians( lat ) ) ) ) AS distance, (score / (POWER(( SELECT (UNIX_TIMESTAMP(UTC_TIMESTAMP())-UNIX_TIMESTAMP(inserted_at)) / 3600) + 2, ?))) as rating FROM post WHERE is_comment = 0 HAVING distance < ? ORDER BY rating DESC", [lat, lng, lat, gravity, distance]) do
       {:ok, %Mariaex.Result{rows: rows}} ->
         rows
       error ->
