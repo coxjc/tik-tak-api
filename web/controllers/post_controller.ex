@@ -39,8 +39,9 @@ defmodule Api.PostController do
 
   def create(conn, %{"content" => content, "lat" => lat, "lng" => lng}) do
     user = conn.assigns.user
+    admin = conn.assigns.admin
     content = String.trim content
-    changeset = Post.create_changeset(%Post{}, %{user: user, content: content, lat: lat, lng: lng})
+    changeset = Post.create_changeset(%Post{}, %{user: user, content: content, lat: lat, lng: lng, is_admin: admin})
     case Repo.insert(changeset) do
       {:ok, post} ->
         conn

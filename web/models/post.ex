@@ -15,6 +15,7 @@ defmodule Api.Post do
     field :comment_count, :integer, default: 0 
 
     field :is_comment, :boolean, default: false
+    field :is_admin, :boolean, default: false
     field :parent_id, :binary_id, default: nil 
 
     belongs_to :user, Api.User
@@ -29,8 +30,8 @@ defmodule Api.Post do
   """
   def create_changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:content, :lat, :lng])
-    |> validate_required([:content, :lat, :lng])
+    |> cast(params, [:content, :lat, :lng, :is_admin])
+    |> validate_required([:content, :lat, :lng, :is_admin])
     |> put_assoc(:user, params.user)
     |> validate_length(:content, min: 1, max: 140)
   end
