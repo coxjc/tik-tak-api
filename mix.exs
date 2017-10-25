@@ -19,7 +19,7 @@ defmodule Api.Mixfile do
   def application do
     [mod: {Api, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_ecto, :cowboy, :sentry, :logger, :gettext,
-                    :phoenix_ecto, :mariaex, :twilex, :uuid, :edeliver]]
+                    :phoenix_ecto, :mariaex, :twilex, :uuid, :edeliver, :remote_ip]]
   end
 
   # Specifies which paths to compile per environment.
@@ -42,7 +42,8 @@ defmodule Api.Mixfile do
      {:twilex, ">= 0.0.0", override: true},
      {:edeliver, "~> 1.4.2"},
      {:distillery, "~> 1.4"},
-     {:sentry, "~> 6.0.0"}
+     {:sentry, "~> 6.0.0"},
+     {:remote_ip, "~> 0.1.0"}
     ]
   end
 

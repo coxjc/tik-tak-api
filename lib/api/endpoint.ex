@@ -1,7 +1,6 @@
 defmodule Api.Endpoint do
   use Phoenix.Endpoint, otp_app: :api
 
-
   socket "/socket", Api.UserSocket
 
   # Serve at "/" the static files from "priv/static" directory.
@@ -36,6 +35,6 @@ defmodule Api.Endpoint do
     store: :cookie,
     key: "_api_key",
     signing_salt: "ZK2Dzemu"
-
+  plug RemoteIp
   plug Api.Router
 end
