@@ -12,6 +12,7 @@ defmodule Api.Router do
   scope "/api", Api do
     pipe_through :api
     get "/them", UserController, :them
+    get "/is_admin", UserController, :is_admin
     post "/phones/verify", PhoneController, :verify
     resources "/users", UserController, only: [:create]
     resources "/phones", PhoneController

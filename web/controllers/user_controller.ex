@@ -88,4 +88,9 @@ defmodule Api.UserController do
     end
   end
 
+  def is_admin(conn, %{}) do
+	admin = conn.assigns.admin
+	conn |> put_status(200) |> json(%{admin: admin})
+  end
+
 end
