@@ -21,6 +21,7 @@ defmodule Api.Post do
     belongs_to :user, Api.User
     has_many :votes, Api.Vote
     has_many :flags, Api.Flag
+    has_one :food, Api.Food
 
     timestamps()
   end

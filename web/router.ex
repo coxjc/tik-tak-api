@@ -18,6 +18,7 @@ defmodule Api.Router do
     resources "/phones", PhoneController
     resources "/posts", PostController, except: [:create, :update, :delete]
     get "/comments", PostController, :comments
+    get "/food", FoodController, :index
     resources "/auth_tokens", AuthTokenController
   end
 
