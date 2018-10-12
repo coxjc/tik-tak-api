@@ -20,7 +20,7 @@ defmodule Api.PostController do
   end
 
   def index(conn, %{"lat" => lat, "lng" => lng, "max" => max}) do
-    # TODO there is too much going on here. having to query from posts twice. works for now so fuck it
+    # TODO there is too much going on here. having to query from posts twice. 
     posts = Enum.map(hot_post_ids(lat, lng, range_in_miles, gravity, max), fn([head|tail]) -> head end) |> visible_posts_from_ids
               |> Enum.map(fn(post) -> Map.put(post, :rating, calc_rating(post, gravity)) end)
     render(conn, "index.json", post: posts)
